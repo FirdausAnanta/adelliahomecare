@@ -293,7 +293,7 @@
           <p>Untuk membuat janji temu atau kunjungan, silakan mengisi form dibawah ini</p>
         </div>
 
-        <form action="forms/appointment.php" method="post" role="form" class="php-email-form">
+        <form action="forms/appointment.php" method="post" role="form" class="php-email-form" name="form-janji">
           <div class="row">
             <div class="col-md-4 form-group">
               <input type="text" name="name" class="form-control" id="name" placeholder="Nama Lengkap" data-rule="minlen:4" data-msg="Please enter at least 4 chars">
@@ -316,24 +316,24 @@
             <div class="col-md-4 form-group mt-3">
               <select name="department" id="department" class="form-select">
                 <option value="">Usia Pasien</option>
-                <option value="Department 1">Bayi</option>
-                <option value="Department 2">Batita</option>
-                <option value="Department 3">Anak anak</option>
-                <option value="Department 4">Remaja</option>
-                <option value="Department 5">Dewasa</option>
-                <option value="Department 6">Lansia</option>
+                <option value="0-1 Tahun">0-1 Tahun</option>
+                <option value="1-3 Tahun">1-3 Tahun</option>
+                <option value="3-10 Tahun">3-10 Tahun</option>
+                <option value="10-19 Tahun">10-19 Tahun</option>
+                <option value="19-50 Tahun">19-50 Tahun</option>
+                <option value="Lebih dari 50 Tahun">Lebih dari 50 Tahun</option>
               </select>
               <div class="validate"></div>
             </div>
             <div class="col-md-4 form-group mt-3">
               <select name="doctor" id="doctor" class="form-select">
                 <option value="">Pilih Pelayanan</option>
-                <option value="Doctor 1">Pendamping Medis</option>
-                <option value="Doctor 2">Perawatan Luka</option>
-                <option value="Doctor 3">Perawatan Lansia</option>
-                <option value="Doctor 4">Baby Care</option>
-                <option value="Doctor 5">Pasca Operasi</option>
-                <option value="Doctor 6">Konsultasi</option>
+                <option value="Pendamping Medis">Pendamping Medis</option>
+                <option value="Perawatan Luka">Perawatan Luka</option>
+                <option value="Perawatan Lansia">Perawatan Lansia</option>
+                <option value="Baby Care">Baby Care</option>
+                <option value="Pasca Operasi">Pasca Operasi</option>
+                <option value="Konsultasi">Konsultasi</option>
               </select>
               <div class="validate"></div>
             </div>
@@ -343,10 +343,9 @@
             <textarea class="form-control" name="message" rows="5" placeholder="Pesan (Optional)"></textarea>
             <div class="validate"></div>
           </div>
-          <div class="mb-3">
-            <div class="loading">Loading</div>
-            <div class="error-message"></div>
-            <div class="sent-message">Janji temu telah dikirimkan. Terimakasih telah mempercayakan kepada Adellia Home Care</div>
+          <div class="alert alert-success alert-dismissible fade show d-none my-alert2" role="alert">
+            <strong>Terimakasih!</strong> Janji temu telah dikirimkan. Terimakasih telah mempercayakan kepada Adellia Home Care
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
           </div>
           <div class="text-center"><button type="submit">Buat Janji Temu</button></div>
         </form>
@@ -717,7 +716,7 @@
 
         <div class="section-title">
           <h2>Contact</h2>
-          <p>Silakan menghubungi kontak dibawah untuk melakukan konsultasi terlebih dahulu</p>
+          <p>Silakan menghubungi kontak dibawah untuk melakukan konsultasi, ataupun memberikan sebuah pesan kepada kami</p>
         </div>
       </div>
 
@@ -753,14 +752,14 @@
           </div>
 
           <div class="col-lg-8 mt-5 mt-lg-0">
-
+            <p>Silakan sampaikan pesan, kesan, ataupun kritik dan saran kepada kami</p>
             <form action="forms/contact.php" method="post" role="form" class="php-email-form" name="submit-to-google-sheet">
               <div class="row">
                 <div class="col-md-6 form-group">
                   <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>
                 </div>
                 <div class="col-md-6 form-group mt-3 mt-md-0">
-                  <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" required>
+                  <input type="text" class="form-control" name="email" id="email" placeholder="Your Whatsapp Number" required>
                 </div>
               </div>
               <div class="form-group mt-3">
@@ -769,10 +768,9 @@
               <div class="form-group mt-3">
                 <textarea class="form-control" name="message" rows="5" placeholder="Message" required></textarea>
               </div>
-              <div class="my-3">
-                <div class="loading">Loading</div>
-                <div class="error-message">Has been sent.</div>
-                <div class="sent-message">Your message has been sent. Thank you!</div>
+              <div class="alert alert-success alert-dismissible fade show d-none my-alert1" role="alert">
+                <strong>Terimakasih!</strong> Tanggapan anda telah dikirim.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
               </div>
               <div class="text-center"><button type="submit">Send Message</button></div>
             </form>
@@ -823,11 +821,33 @@
   <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbxZfWjpxjoKJIdL1DCz-1mhRrA5u_STLz_TIe8FFcuN3Vdz5fRXPBYVKgDxqgXe8peN8Q/exec'
     const form = document.forms['submit-to-google-sheet']
-  
+    const myAlert = document.querySelector('.my-alert1')
     form.addEventListener('submit', e => {
       e.preventDefault()
+      
       fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-        .then(response => console.log('Success!', response))
+        .then(response => {
+          myAlert.classList.toggle('d-none')
+          form.reset()
+          console.log('Success!', response)
+        })
+        .catch(error => console.error('Error!', error.message))
+    })
+  </script>
+
+  <script>
+    const scriptURL2 = 'https://script.google.com/macros/s/AKfycbyXw_eVxhcoWg65__rrzhkeBnA0ntHGC33-JO-LVXneMefjySck5Uhs2vT_0e4fM16xzA/exec'
+    const form2 = document.forms['form-janji']
+    const myAlert2 = document.querySelector('.my-alert2')
+    form2.addEventListener('submit', e => {
+      e.preventDefault()
+      
+      fetch(scriptURL2, { method: 'POST', body: new FormData(form2)})
+        .then(response => {
+          myAlert2.classList.toggle('d-none')
+          form2.reset()
+          console.log('Success!', response)
+        })
         .catch(error => console.error('Error!', error.message))
     })
   </script>
